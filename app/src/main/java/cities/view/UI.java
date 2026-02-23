@@ -10,9 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
 import java.net.URL;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -88,7 +86,7 @@ public class UI {
         mainFrame = new JFrame(TITLE);
         setIcon(mainFrame);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(400, 300);
+        mainFrame.setSize(400, 500);
         mainFrame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 

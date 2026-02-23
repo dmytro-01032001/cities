@@ -1,22 +1,26 @@
 package cities.data;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class DataModel {
     private String curentCity;
     private Character lastLetter;
-    private Cities cities = new Cities();
-    private List<String> usedCities = new ArrayList<>();
+    private Cities cities;
+    private HashSet<String> usedCities = new HashSet<>();
 
-    public void setCity(String text){
-        this.curentCity = text;
-        usedCities.add(text.toUpperCase());
-        setLastLetter(text);
+    public DataModel(Cities cities){
+        this.cities = cities;
+    }
+
+    public void setCity(String name){
+        this.curentCity = name;
+        putInUsedCities(name);
+        setLastLetter(name);
     }
     
     private void setLastLetter(String text){
-        if(text.charAt(text.length() - 1) == 'ь'){
+        if (text.charAt(text.length() - 1) == 'ь') {
             lastLetter = text.charAt(text.length() - 2);
         } else {
             lastLetter = text.charAt(text.length() - 1);
@@ -45,8 +49,8 @@ public class DataModel {
             return null;
         } else {
             for (String city: subCities){
-                if (!usedCities.contains(city.toUpperCase())){
-                    usedCities.add(city.toUpperCase());
+                if (!cityAlreadyUsed(city)){
+                    putInUsedCities(city);
                     setLastLetter(city);
                     return city;
                 }
@@ -55,8 +59,12 @@ public class DataModel {
         return null;
     }
 
-    public boolean cityAlreadyUsed(String text){
-        return usedCities.contains(text.trim().toUpperCase());
+    public boolean cityAlreadyUsed(String name){
+        return usedCities.contains(name.trim().toUpperCase());
+    }
+
+    private void putInUsedCities(String name){
+        usedCities.add(name.toUpperCase());
     }
 
     public boolean cityStartsCorrectly(String text){
@@ -67,7 +75,7 @@ public class DataModel {
     }
 
     public void reset(){
-        usedCities = new ArrayList<>();
+        usedCities = new HashSet<>();
         lastLetter = null;
         curentCity = "";
     }

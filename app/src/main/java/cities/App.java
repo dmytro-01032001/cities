@@ -4,21 +4,15 @@
 package cities;
 
 import javax.swing.SwingUtilities;
-
 import cities.controller.AppController;
-import cities.view.UI;
-import cities.data.DataModel;
 
 public class App {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            DataModel model = new DataModel();
-            UI view = new UI();
-            // Створюємо контролер, який зв'яже їх
-            new AppController(model, view);
             
-            view.show();
+            AppController app = new AppController();
+            app.start();
         });
     }
 }

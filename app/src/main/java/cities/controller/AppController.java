@@ -1,17 +1,23 @@
 package cities.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import cities.view.ModalWindow;
 import cities.view.UI;
+import cities.data.Cities;
 import cities.data.DataModel;
+import cities.data.parse.ParseCities;
 
 public class AppController {
     private DataModel model;
     private UI view;
-    private String noSuchCityMsg = "Такого міста нема у списку. Спробуйте ще.";
-    private String thisCityAlreadyUsedMsg = "Це місто вже було. Спробуйте ще.";
+    private static final String NO_SUCH_CITY = "Такого міста нема у списку. Спробуйте ще.";
+    private static final String CITY_ALREADY_USED = "Це місто вже було. Спробуйте ще.";
+    private static final String YOUR_MOVE = "Ваш хід!";
     private int userScore = 0;
     private int computerScore = 0;
-    private String giveUpText = "здаюсь";
+    private static final String giveUpText = "ЗДАЮСЬ";
 
     private String yourMoveMsg(){
         return "Назвіть місто, що починається на " + model.getLastLetter();
@@ -39,6 +45,7 @@ public class AppController {
         view.setCompCityText("");
         view.setCompScoreText(computerScore);
         view.setUserScoreText(userScore);
+        view.showMessage(YOUR_MOVE);
     }
 
     private void compMakeMove(){
@@ -65,22 +72,28 @@ public class AppController {
         setAllZero();
     }
 
-    public AppController(DataModel model, UI view) {
-        this.model = model;
-        this.view = view;
+    public AppController() {
+        ParseCities parser = new ParseCities();
+        parser.parseCities();
+        ArrayList<String> allCities = parser.getAllCities();
+        Map<Character, List<String>> citiesMap = parser.getCitiesMap();
+        Cities cities = new Cities(allCities, citiesMap);
 
-        this.view.showMessage("Ваш хід!");
+        this.model = new DataModel(cities);
+        this.view = new UI();
+
+        this.view.showMessage(YOUR_MOVE);
 
         this.view.getActionButton().addActionListener(e -> {
             String input = this.view.getCityInputText().trim();
-            if (input.equals(giveUpText)){
+            if (input.equalsIgnoreCase(giveUpText)){
                 showModal(false);
                 setAllZero();
                 return;
             }
             if (model.ifCityExists(input)){
                 if (model.cityAlreadyUsed(input)){
-                    this.view.showMessage(thisCityAlreadyUsedMsg);
+                    this.view.showMessage(CITY_ALREADY_USED);
                 } else {
                     if (model.cityStartsCorrectly(input)){
                         model.setCity(input);
@@ -91,8 +104,12 @@ public class AppController {
                     }
                 }
             } else {
-                this.view.showMessage(noSuchCityMsg);
+                this.view.showMessage(NO_SUCH_CITY);
             }
         });
+    }
+
+    public void start(){
+        view.show();
     }
 }
